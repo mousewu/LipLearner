@@ -2,3 +2,4 @@ __pycache__
 *.pt
 checkpoints
 weight.bin
+LipLearner_Android/app/src/main/assets/mpc001_resnet18_mstcn.onnx

@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple stylized lips -->
+    <path
+        android:fillColor="#FF5A7A"
+        android:pathData="M30,54 C42,44 66,44 78,54 C66,50 42,50 30,54 Z" />
+    <path
+        android:fillColor="#E23E5C"
+        android:pathData="M30,54 C42,66 66,66 78,54 C66,60 42,60 30,54 Z" />
+</vector>
