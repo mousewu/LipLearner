@@ -20,7 +20,18 @@ import kotlin.math.hypot
  */
 class LipLandmarker(context: Context, modelAsset: String = "face_landmarker.task") {
 
-    data class LipResult(val cropRect: Rect, val mod: Float, val hasFace: Boolean)
+    /**
+     * @param alignPoints the 4 stable keypoints [rightEye, leftEye, nose, mouthCenter] in image
+     *   pixels, used by [FaceAligner] for the open-vocabulary VSR pipeline (null if no face).
+     */
+    data class LipResult(
+        val cropRect: Rect,
+        val mod: Float,
+        val hasFace: Boolean,
+        val alignPoints: Array<FloatArray>? = null,
+        /** Full 68-point layout for the Chinese (CNVSRC) alignment. */
+        val points68: Array<FloatArray>? = null,
+    )
 
     // MediaPipe Face Mesh landmark indices.
     private companion object {
@@ -94,7 +105,26 @@ class LipLandmarker(context: Context, modelAsset: String = "face_landmarker.task
             (cx + half).toInt(),
             (cy + half).toInt(),
         )
-        return LipResult(rect, mod, true)
+
+        // Stable keypoints for mean-face alignment (open-vocabulary VSR path):
+        // eye centers from the iris/eye contours, nose tip, and the lip centroid.
+        fun mid(vararg ids: Int): FloatArray {
+            var mx = 0f; var my = 0f
+            for (i in ids) { mx += px(i); my += py(i) }
+            return floatArrayOf(mx / ids.size, my / ids.size)
+        }
+        val alignPoints = arrayOf(
+            mid(33, 133),   // right eye center (outer/inner corner)
+            mid(362, 263),  // left eye center
+            floatArrayOf(px(1), py(1)), // nose tip
+            floatArrayOf(cx, cy),       // mouth center
+        )
+        // The Chinese model aligns on the full 68-point layout, so expose that too.
+        val points68 = Array(FaceAligner.MP_TO_68.size) { i ->
+            val id = FaceAligner.MP_TO_68[i]
+            floatArrayOf(px(id), py(id))
+        }
+        return LipResult(rect, mod, true, alignPoints, points68)
     }
 
     fun close() = landmarker.close()

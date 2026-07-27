@@ -3,3 +3,5 @@ __pycache__
 checkpoints
 weight.bin
 LipLearner_Android/app/src/main/assets/mpc001_resnet18_mstcn.onnx
+LipLearner_Android/app/src/main/assets/free_vsr_en.onnx
+LipLearner_Android/app/src/main/assets/free_vsr_cn.onnx
